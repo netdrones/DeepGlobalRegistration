@@ -17,3 +17,7 @@ tmp.txt
 output.ply
 bunny.ply
 test.sh
+*.ply
+
+ResUNetBN2C-feat32-3dmatch-v0.05.pth
+redkitchen_000.ply redkitchen_010.ply
