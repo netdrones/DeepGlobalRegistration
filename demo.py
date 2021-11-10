@@ -5,6 +5,7 @@
 # - Christopher Choy, Jaesik Park, Vladlen Koltun, Fully Convolutional Geometric Features, ICCV 2019
 # - Christopher Choy, JunYoung Gwak, Silvio Savarese, 4D Spatio-Temporal ConvNets: Minkowski Convolutional Neural Networks, CVPR 2019
 import os
+import numpy as np
 from urllib.request import urlretrieve
 
 import open3d as o3d
@@ -40,9 +41,10 @@ if __name__ == '__main__':
   dgr = DeepGlobalRegistration(config)
   T01 = dgr.register(pcd0, pcd1)
 
-  o3d.visualization.draw_geometries([pcd0, pcd1])
-
   pcd0.transform(T01)
+  print('------------------------------')
+  print('TRANSFORMATION MATRIX')
   print(T01)
+  print('------------------------------')
 
-  o3d.visualization.draw_geometries([pcd0, pcd1])
+  o3d.io.write_point_cloud('out.ply', pcd0)
