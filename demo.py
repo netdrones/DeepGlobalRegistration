@@ -47,4 +47,7 @@ if __name__ == '__main__':
   print(T01)
   print('------------------------------')
 
-  o3d.io.write_point_cloud('out.ply', pcd0)
+  new_pcd = pcd0 + pcd1
+  new_pcd = new_pcd.voxel_down_sample(voxel_size=0.05)
+
+  o3d.io.write_point_cloud('out.ply', new_pcd)
