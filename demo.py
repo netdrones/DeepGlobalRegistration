@@ -46,5 +46,3 @@ if __name__ == '__main__':
   print('TRANSFORMATION MATRIX')
   print(T01)
   print('------------------------------')
-
-  o3d.io.write_point_cloud('out.ply', pcd0)
