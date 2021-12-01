@@ -15,15 +15,40 @@ import torch
 import copy
 import MinkowskiEngine as ME
 
-sys.path.append('.')
-from model import load_model
+from .knn import find_knn_gpu
+from .registration import GlobalRegistration
 
-from core.registration import GlobalRegistration
-from core.knn import find_knn_gpu
+from ..util.timer import Timer
+from ..util.pointcloud import make_open3d_point_cloud
 
-from util.timer import Timer
-from util.pointcloud import make_open3d_point_cloud
+from . import simpleunet as simpleunets
+from . import resunet as resunets
+from . import pyramidnet as pyramids
 
+MODELS = []
+
+def add_models(module):
+    MODELS.extend([getattr(module, a) for a in dir(module) if 'Net' in a or 'MLP' in a])
+
+def load_model(name):
+  '''Creates and returns an instance of the model given its class name.
+  '''
+  # Find the model class from its name
+  all_models = MODELS
+  mdict = {model.__name__: model for model in all_models}
+  if name not in mdict:
+    logging.info(f'Invalid model index. You put {name}. Options are:')
+    # Display a list of valid model names
+    for model in all_models:
+      logging.info('\t* {}'.format(model.__name__))
+    return None
+  NetClass = mdict[name]
+
+  return NetClass
+
+add_models(simpleunets)
+add_models(resunets)
+add_models(pyramids)
 
 # Feature-based registrations in Open3D
 def registration_ransac_based_on_feature_matching(pcd0, pcd1, feats0, feats1,
@@ -51,14 +76,6 @@ def registration_ransac_based_on_correspondence(pcd0, pcd1, idx0, idx1,
                                                 distance_threshold, num_iterations):
   corres = np.stack((idx0, idx1), axis=1)
   corres = o3d.utility.Vector2iVector(corres)
-
-  """
-  result = o3d.pipelines.registration.registration_ransac_based_on_correspondence(
-      pcd0, pcd1, corres, distance_threshold,
-      o3d.pipelines.registration.TransformationEstimationPointToPoint(False), 4,
-      o3d.pipelines.registration.RANSACConvergenceCriteria(4000000, num_iterations))
-  """
-
   result = o3d.pipelines.registration.registration_ransac_based_on_correspondence(
       pcd0, pcd1, corres, distance_threshold)
 

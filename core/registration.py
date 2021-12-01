@@ -9,9 +9,8 @@ import numpy as np
 import torch
 import torch.optim as optim
 
-from core.knn import pdist
-from core.loss import HighDimSmoothL1Loss
-
+from .knn import pdist
+from .loss import HighDimSmoothL1Loss
 
 def ortho2rotation(poses):
   r"""
