@@ -107,7 +107,7 @@ class DeepGlobalRegistration:
     network_config = state['config']
     self.network_config = network_config
     self.config.inlier_feature_type = network_config.inlier_feature_type
-    self.voxel_size = network_config.voxel_size
+    self.voxel_size = config.voxel_size
     print(f'=> Setting voxel size to {self.voxel_size}')
 
     # FCGF network initialization
